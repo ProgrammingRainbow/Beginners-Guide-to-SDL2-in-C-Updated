@@ -20,6 +20,8 @@ struct Game {
 
 void game_free(struct Game *g);
 bool game_init_sdl(struct Game *g);
+void game_events(struct Game *g);
+void game_draw(struct Game *g);
 void game_run(struct Game *g);
 
 void game_free(struct Game *g) {
@@ -49,53 +51,62 @@ bool game_init_sdl(struct Game *g) {
     g->window = SDL_CreateWindow(WINDOW_TITLE, SDL_WINDOWPOS_CENTERED,
                                  SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH,
                                  WINDOW_HEIGHT, WINDOW_FLAGS);
-    if (!g->window) {
-        fprintf(stderr, "Error creating window: %s\n", SDL_GetError());
+    if (g->window == NULL) {
+        fprintf(stderr, "Error creating Window: %s\n", SDL_GetError());
+        game_free(g);
         return false;
     }
 
     g->renderer = SDL_CreateRenderer(g->window, -1, RENDERER_FLAGS);
-    if (!g->renderer) {
-        fprintf(stderr, "Error creating renderer: %s\n", SDL_GetError());
+    if (g->renderer == NULL) {
+        fprintf(stderr, "Error creating Renderer: %s\n", SDL_GetError());
+        game_free(g);
         return false;
     }
 
     return true;
 }
 
-void game_run(struct Game *g) {
-    g->is_running = true;
-
-    while (g->is_running) {
-        while (SDL_PollEvent(&g->event)) {
-            switch (g->event.type) {
-            case SDL_QUIT:
+void game_events(struct Game *g) {
+    while (SDL_PollEvent(&g->event)) {
+        switch (g->event.type) {
+        case SDL_QUIT:
+            g->is_running = false;
+            break;
+        case SDL_KEYDOWN:
+            switch (g->event.key.keysym.scancode) {
+            case SDL_SCANCODE_ESCAPE:
                 g->is_running = false;
-                break;
-            case SDL_KEYDOWN:
-                switch (g->event.key.keysym.scancode) {
-                case SDL_SCANCODE_ESCAPE:
-                    g->is_running = false;
-                    break;
-                default:
-                    break;
-                }
                 break;
             default:
                 break;
             }
+        default:
+            break;
         }
+    }
+}
 
-        SDL_RenderClear(g->renderer);
+void game_draw(struct Game *g) {
+    SDL_RenderClear(g->renderer);
 
-        SDL_RenderPresent(g->renderer);
+    SDL_RenderPresent(g->renderer);
+}
+
+void game_run(struct Game *g) {
+    g->is_running = true;
+
+    while (g->is_running) {
+        game_events(g);
+
+        game_draw(g);
 
         SDL_Delay(16);
     }
 }
 
 int main(void) {
-    bool exit_status = EXIT_FAILURE;
+    int exit_status = EXIT_FAILURE;
 
     struct Game game = {0};
 
