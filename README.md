@@ -34,5 +34,5 @@ A, S, W, D, - Moves Player Sprite\
 M - Toggles Music\
 S - Toggles Sound Effects\
 F - Toggles displaying FPS\
-P - Toggles displaying other sprite position.
+P - Toggles displaying sprite position\
 Escape - Quits
