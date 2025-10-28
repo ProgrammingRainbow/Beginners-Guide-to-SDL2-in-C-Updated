@@ -32,7 +32,7 @@ Space - Changes the background Color\
 Arrows - Moves Player Sprite\
 A, S, W, D, - Moves Player Sprite\
 M - Toggles Music\
-S - Toggles Sound Effects\
+N - Toggles Sound Effects\
 F - Toggles displaying FPS\
 P - Toggles displaying sprite position\
 Escape - Quits
