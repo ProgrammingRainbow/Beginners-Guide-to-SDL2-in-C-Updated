@@ -5,10 +5,16 @@
 bool game_init_sdl(struct Game *g);
 void game_render_color(struct Game *g);
 void game_events(struct Game *g);
+void game_update(struct Game *g);
 void game_draw(struct Game *g);
 
 void game_free(struct Game *g) {
     if (g) {
+        if (g->player) {
+            player_free(g->player);
+            g->player = NULL;
+        }
+
         if (g->background) {
             SDL_DestroyTexture(g->background);
             g->background = NULL;
@@ -53,6 +59,13 @@ struct Game *game_new(void) {
         return NULL;
     }
 
+    g->player = player_new(g->renderer);
+    if (g->player == NULL) {
+        game_free(g);
+        g = NULL;
+        return NULL;
+    }
+
     g->is_running = true;
 
     srand((unsigned)time(NULL));
@@ -90,6 +103,8 @@ void game_events(struct Game *g) {
     }
 }
 
+void game_update(struct Game *g) { player_update(g->player); }
+
 void game_draw(struct Game *g) {
     SDL_SetRenderDrawColor(g->renderer, 0, 0, 0, 255);
     SDL_RenderClear(g->renderer);
@@ -99,6 +114,7 @@ void game_draw(struct Game *g) {
     SDL_RenderFillRect(g->renderer, NULL);
 
     SDL_RenderCopy(g->renderer, g->background, NULL, NULL);
+    player_draw(g->player);
 
     SDL_RenderPresent(g->renderer);
 }
@@ -106,6 +122,8 @@ void game_draw(struct Game *g) {
 void game_run(struct Game *g) {
     while (g->is_running) {
         game_events(g);
+
+        game_update(g);
 
         game_draw(g);
 

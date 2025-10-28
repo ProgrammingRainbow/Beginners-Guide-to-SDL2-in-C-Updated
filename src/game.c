@@ -1,7 +1,6 @@
 #include "game.h"
 #include "init_sdl.h"
 #include "load_media.h"
-#include <SDL2/SDL_scancode.h>
 
 void game_render_color(struct Game *g);
 bool game_toggle_music(struct Game *g);
@@ -94,10 +93,12 @@ struct Game *game_new(void) {
 
     if (!game_init_sdl(g)) {
         game_free(g);
+        g = NULL;
         return NULL;
     }
     if (!game_load_media(g)) {
         game_free(g);
+        g = NULL;
         return NULL;
     }
 
@@ -107,6 +108,7 @@ struct Game *game_new(void) {
                               BUBBLE_RADIUS, BLUE_COLOR, WHITE_COLOR);
     if (g->text == NULL) {
         game_free(g);
+        g = NULL;
         return NULL;
     }
 
@@ -114,6 +116,7 @@ struct Game *game_new(void) {
                                   BUBBLE_RADIUS, BLACK_COLOR, WHITE_COLOR);
     if (g->fps_text == NULL) {
         game_free(g);
+        g = NULL;
         return NULL;
     }
     text_set_anchor(g->fps_text, TOP);
@@ -123,6 +126,7 @@ struct Game *game_new(void) {
                                 BUBBLE_RADIUS, BLACK_COLOR, WHITE_COLOR);
     if (g->x_text == NULL) {
         game_free(g);
+        g = NULL;
         return NULL;
     }
     text_set_anchor(g->x_text, TOP_LEFT);
@@ -132,6 +136,7 @@ struct Game *game_new(void) {
                                 BUBBLE_RADIUS, BLACK_COLOR, WHITE_COLOR);
     if (g->y_text == NULL) {
         game_free(g);
+        g = NULL;
         return NULL;
     }
     text_set_anchor(g->y_text, TOP_RIGHT);
@@ -140,12 +145,14 @@ struct Game *game_new(void) {
     g->player = player_new(g->renderer);
     if (g->player == NULL) {
         game_free(g);
+        g = NULL;
         return NULL;
     }
 
     g->fps = fps_new();
     if (g->fps == NULL) {
         game_free(g);
+        g = NULL;
         return NULL;
     }
 

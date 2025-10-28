@@ -15,9 +15,12 @@
 #define RENDERER_SCALE_QUALITY "2"
 #define RENDERER_SCALE_INT SDL_FALSE
 
-#define WINDOW_TITLE "Random Colors & Resizable"
+#define WINDOW_TITLE "Player Sprite"
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT 720
 #define WINDOW_ICON "images/C-logo.png"
+
+#define PLAYER_VEL 5
+#define NORMALIZED_45 0.707f
 
 #endif

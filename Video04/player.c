@@ -1,6 +1,4 @@
 #include "player.h"
-#include "bubble.h"
-#include "main.h"
 
 void player_free(struct Player *p) {
     if (p) {
@@ -28,16 +26,9 @@ struct Player *player_new(SDL_Renderer *renderer) {
 
     p->renderer = renderer;
 
-    // p->image = IMG_LoadTexture(p->renderer, "images/C-logo.png");
-    // if (!p->image) {
-    //     fprintf(stderr, "Error loading Texture: %s\n", SDL_GetError());
-    //     player_free(p);
-    //     return NULL;
-    // }
-
-    p->image = bubble_texture(renderer, "images/C-logo.png", BUBBLE_RADIUS,
-                              WHITE_COLOR);
+    p->image = IMG_LoadTexture(p->renderer, "images/C-logo.png");
     if (!p->image) {
+        fprintf(stderr, "Error loading Texture: %s\n", SDL_GetError());
         player_free(p);
         p = NULL;
         return NULL;
@@ -55,7 +46,7 @@ struct Player *player_new(SDL_Renderer *renderer) {
     return p;
 }
 
-void player_update(struct Player *p, float dt) {
+void player_update(struct Player *p) {
     int x_dir = 0;
     int y_dir = 0;
 
@@ -73,15 +64,12 @@ void player_update(struct Player *p, float dt) {
     }
 
     if (x_dir && y_dir) {
-        p->x += (float)x_dir * PLAYER_VEL * NORMALIZED_45 * dt;
-        p->y += (float)y_dir * PLAYER_VEL * NORMALIZED_45 * dt;
+        p->rect.x += x_dir * (int)(PLAYER_VEL * NORMALIZED_45);
+        p->rect.y += y_dir * (int)(PLAYER_VEL * NORMALIZED_45);
     } else {
-        p->x += (float)x_dir * PLAYER_VEL * dt;
-        p->y += (float)y_dir * PLAYER_VEL * dt;
+        p->rect.x += x_dir * PLAYER_VEL;
+        p->rect.y += y_dir * PLAYER_VEL;
     }
-
-    p->rect.x = (int)p->x;
-    p->rect.y = (int)p->y;
 }
 
 void player_draw(const struct Player *p) {

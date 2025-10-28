@@ -47,12 +47,16 @@ bool text_regen_image(struct Text *t) {
         if (outer_surf == NULL) {
             fprintf(stderr, "Error rendering text to outer Surface: %s\n",
                     SDL_GetError());
+            SDL_FreeSurface(text_surf);
+            text_surf = NULL;
             return false;
         }
 
         surf = bubble_two_surfaces(t->radius, text_surf, outer_surf);
         SDL_FreeSurface(text_surf);
         text_surf = NULL;
+        SDL_FreeSurface(outer_surf);
+        outer_surf = NULL;
         if (surf == NULL) {
             return false;
         }
@@ -69,7 +73,6 @@ bool text_regen_image(struct Text *t) {
     if (!t->image) {
         fprintf(stderr, "Error creating Texture from Surface: %s\n",
                 SDL_GetError());
-        text_free(t);
         return false;
     }
 
@@ -98,11 +101,13 @@ struct Text *text_new(SDL_Renderer *renderer, const char *font_file,
     if (t->font == NULL) {
         fprintf(stderr, "Error Opening Font: %s\n", SDL_GetError());
         text_free(t);
+        t = NULL;
         return NULL;
     }
 
     if (!text_regen_image(t)) {
         text_free(t);
+        t = NULL;
         return NULL;
     }
 
@@ -134,11 +139,13 @@ struct Text *text_bubble_new(SDL_Renderer *renderer, const char *font_file,
     if (t->font == NULL) {
         fprintf(stderr, "Error Opening Font: %s\n", SDL_GetError());
         text_free(t);
+        t = NULL;
         return NULL;
     }
 
     if (!text_regen_image(t)) {
         text_free(t);
+        t = NULL;
         return NULL;
     }
 

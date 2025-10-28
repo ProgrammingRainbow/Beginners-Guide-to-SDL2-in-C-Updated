@@ -40,8 +40,9 @@
 #define TEXT_VEL 180
 
 #define PLAYER_VEL 300
+#define NORMALIZED_45 0.707f
 
-#define FPS_TARGET 100000
+#define FPS_TARGET 60
 #define FPS_MAX_DURATION 50
 
 enum RectAnchor {
